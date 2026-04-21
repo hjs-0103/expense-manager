@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-v4uhzq9jz=j2de01e6=cwqphkxl75^xak3dueuv99y*7)k7gr%
 DEBUG = False
 
 # Update this with your Render app URL after deployments
-ALLOWED_HOSTS = ['https://expense-manager-ev99.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['expense-manager-ev99.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition

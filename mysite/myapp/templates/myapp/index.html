@@ -1,0 +1,227 @@
+{% extends 'myapp/base.html' %}
+{% load humanize %}
+{% block body %}
+
+<h2>Index Page</h2>
+<div><h1>Yearly total : {{yearly}}</h1>
+<h1>Monthly total : {{monthly}}</h1>
+<h1>Weekly total : {{weekly}}</h1></div>
+
+
+<form method="post">
+    <h2>Add expense</h2>
+    {% csrf_token %}
+    <div>
+        <label for="name">Expense name</label>
+        {{expense_form.name}}
+    </div>
+
+        <div>
+        <label for="amount">Expense amount</label>
+        {{expense_form.amount}}
+    </div>
+
+
+      <div>
+        <label for="category">Expense category</label>
+        {{expense_form.category}}
+    </div>
+
+ 
+    <button type="submit">Add</button>
+</form>
+
+
+<div>
+    <h1>Expenses</h1>
+   
+</div>
+
+<div>
+    <table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+        </tr>
+
+    </thead>
+
+    
+
+    <tbody>
+    {% for expense in all_expenses %}
+   
+    <tr>
+        <td>
+           {{expense.date}}
+        </td>
+        <td>
+            {{expense.name}}
+        </td>
+        <td>
+            {{expense.category}}
+        </td>
+
+        <td>
+            {{expense.amount | intcomma}}
+        </td>
+        <td>
+            <a href="{% url 'edit' expense.id %}">Modify</a>
+        </td>
+        <td>
+            <a href="{% url 'delete' expense.id %}">Delete</a>
+        </td>
+    </tr>
+
+    
+
+    
+    {% endfor %}
+
+
+
+    </tbody>
+    </table>
+
+
+    <h2>Daily sums</h2>
+    <table id="daily-sums">
+        <thead>
+            <tr>
+            <th>Date</th>
+            <th>Total Sales</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for entry in daily %}
+            <tr>
+                <td>{{entry.date}}</td>
+                <td>{{entry.sum}}</td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+
+    </table>
+
+
+    <h2>Category sums</h2>
+
+    <table id="cat-table">
+        <thead>
+            <tr>
+            <th>Category</th>
+            <th>Total Sales</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in categorysums %}
+            <tr>
+                <td>{{entry.category}}</td>
+                <td>{{entry.sum}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+    <h2>Total expenses occured:  $ {{sum | intcomma}}</h2>
+</div>
+
+<div>
+    <div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<div>
+  <canvas id="myChart1"></canvas>
+</div>
+</div>
+
+
+
+<script>
+    const categories = [];
+    const expenses = [];
+    const catSumDiv = document.getElementById('cat-table').getElementsByTagName("td");
+
+    for(let i = 0; i < catSumDiv.length; i++) {
+        if (i % 2 === 0) {
+            categories.push(catSumDiv[i].innerText);
+        } else {
+            expenses.push(Number(catSumDiv[i].innerText.replace(/,/g, '')));
+        }
+    }
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Category Sums',
+                data: expenses,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Expenses by Category'
+                }
+            }
+        }
+    });
+
+    const dates = [];
+    const daily_expenses = [];
+    const dailySumDiv = document.getElementById('daily-sums').getElementsByTagName("td");
+
+    for(let i = 0; i < dailySumDiv.length; i++) {
+        if (i % 2 === 0) {
+            dates.push(dailySumDiv[i].innerText);
+        } else {
+            daily_expenses.push(Number(dailySumDiv[i].innerText.replace(/,/g, '')));
+        }
+    }
+    
+    
+    const ctx1 = document.getElementById('myChart1')
+
+     
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Dates',
+                data: daily_expenses,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Expenses by Category'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

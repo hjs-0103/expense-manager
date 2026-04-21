@@ -1,0 +1,12 @@
+{% extends 'myapp/base.html' %}
+
+{% block body %}
+<form method="POST">
+{% csrf_token %}
+
+
+
+{{expense_form}}
+<button typ="submit">Submit</button>
+</form>
+{% endblock %}

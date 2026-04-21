@@ -1,0 +1,12 @@
+{% extends 'myapp/base.html' %}
+
+{% block body %}
+<form method="POST">
+{% csrf_token %}
+
+<h1>Are you sure you want to delete</h1>
+<h2>{{expense_form.name}}</h2>
+
+<button typ="submit">Submit</button>
+</form>
+{% endblock %}
